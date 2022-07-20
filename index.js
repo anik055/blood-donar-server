@@ -82,11 +82,35 @@ client.connect((err) => {
   });
 
   app.get("/AllBloodDetails", (req, res) => {
-    bloodDetails
-      .find()
-      .toArray((err, documents) => {
+    if (req?.query?.groupId && req?.query?.locationId) {
+      // console.log(typeof req.query.groupId)
+      bloodDetails
+        .find({
+          groupId: parseInt(req.query.groupId),
+          locationId: parseInt(req.query.locationId),
+        })
+        .toArray((err, documents) => {
+          res.send(documents);
+        });
+    }
+    else if (req?.query?.groupId && !req?.query?.locationId) {
+      bloodDetails
+        .find({ groupId: parseInt(req.query.groupId) })
+        .toArray((err, documents) => {
+          res.send(documents);
+        });
+    } else if (!req?.query?.groupId && req?.query?.locationId) {
+      bloodDetails
+        .find({ locationId: parseInt(req.query.locationId) })
+        .toArray((err, documents) => {
+          res.send(documents);
+        });
+    } else {
+      bloodDetails.find().toArray((err, documents) => {
         res.send(documents);
       });
+    }
+
   });
 
   app.post("/addAdmin", (req, res) => {
