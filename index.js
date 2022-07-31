@@ -24,12 +24,6 @@ const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-// const client = new MongoClient(
-//   uri,
-//   { useNewUrlParser: true, useUnifiedTopology: true },
-//   { connectTimeoutMS: 30000 },
-//   { keepAlive: 1 }
-// );
 client.connect((err) => {
   console.log("err",err);
   const productsCollection = client
@@ -42,27 +36,15 @@ client.connect((err) => {
   const reviewCollection = client.db("bachelorCommerce").collection("reviews");
   const newOrderCollection = client.db("bachelorCommerce").collection("newOrder");
   const bloodDetails = client.db("blood-donation").collection("bloodDetails");
+  const userDetails = client.db("blood-donation").collection("userDetails");
 
-  app.patch("/update/:id", (req, res) => {
-    console.log(req.params.id);
-    ordersCollection
-      .updateOne(
-        { _id: ObjectID(req.params.id) },
-        {
-          $set: { status: req.body.status },
-        }
-      )
-      .then((result) => {
-        console.log(result);
-      });
+app.post("/AddUserDetails", (req, res) => {
+  const order = req.body;
+  userDetails.insertOne(order).then((result) => {
+    console.log(result);
+    res.send(result.insertedCount > 0);
   });
-
-  app.post("/addOrder", (req, res) => {
-    const order = req.body;
-    ordersCollection.insertOne(order).then((result) => {
-      res.send(result.insertedCount > 0);
-    });
-  });
+});
 
   app.post("/AddBloodDetails", (req, res) => {
     const order = req.body;
@@ -112,6 +94,27 @@ client.connect((err) => {
     }
 
   });
+
+    app.patch("/update/:id", (req, res) => {
+      console.log(req.params.id);
+      ordersCollection
+        .updateOne(
+          { _id: ObjectID(req.params.id) },
+          {
+            $set: { status: req.body.status },
+          }
+        )
+        .then((result) => {
+          console.log(result);
+        });
+    });
+
+    app.post("/addOrder", (req, res) => {
+      const order = req.body;
+      ordersCollection.insertOne(order).then((result) => {
+        res.send(result.insertedCount > 0);
+      });
+    });
 
   app.post("/addAdmin", (req, res) => {
     const email = req.body;
