@@ -46,6 +46,17 @@ app.post("/AddUserDetails", (req, res) => {
   });
 });
 
+  app.post("/GetUserDetails", (req, res) => {
+    console.log(req?.body?.email);
+    userDetails
+      .find({email:req.body.email  })
+      .toArray((err, documents) => {
+        // console.log(documents,err)
+        res.send(documents);
+      });
+  });
+
+
   app.post("/AddBloodDetails", (req, res) => {
     const order = req.body;
     bloodDetails.insertOne(order).then((result) => {
