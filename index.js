@@ -46,6 +46,28 @@ app.post("/AddUserDetails", (req, res) => {
   });
 });
 
+  app.put("/UpdateUserDetails", (req, res) => {
+   const {email, name, group, groupId, location, locationId, phone} = req.body
+
+    userDetails
+      .updateOne(
+        { email: email },
+        {
+          $set: {
+            name: name,
+            group: group,
+            groupId: groupId,
+            locationId: locationId,
+            location: location,
+            phone:phone
+          },
+        }
+      )
+      .then((result) => {
+        console.log(result, 'resulllllllllllllllllllllllllllllllllll');
+      });
+  });
+
   app.post("/GetUserDetails", (req, res) => {
     console.log(req?.body?.email);
     userDetails
@@ -103,7 +125,6 @@ app.post("/AddUserDetails", (req, res) => {
         res.send(documents);
       });
     }
-
   });
 
     app.patch("/update/:id", (req, res) => {
