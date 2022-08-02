@@ -48,7 +48,6 @@ app.post("/AddUserDetails", (req, res) => {
 
   app.put("/UpdateUserDetails", (req, res) => {
    const {email, name, group, groupId, location, locationId, phone} = req.body
-
     userDetails
       .updateOne(
         { email: email },
@@ -64,7 +63,7 @@ app.post("/AddUserDetails", (req, res) => {
         }
       )
       .then((result) => {
-        console.log(result, 'resulllllllllllllllllllllllllllllllllll');
+        res.send(result);
       });
   });
 
