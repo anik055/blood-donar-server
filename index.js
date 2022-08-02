@@ -47,7 +47,8 @@ app.post("/AddUserDetails", (req, res) => {
 });
 
   app.put("/UpdateUserDetails", (req, res) => {
-   const {email, name, group, groupId, location, locationId, phone} = req.body
+    const { email, name, group, groupId, location, locationId, phone,status } = req.body;
+    console.log(req.body)
     userDetails
       .updateOne(
         { email: email },
@@ -58,11 +59,13 @@ app.post("/AddUserDetails", (req, res) => {
             groupId: groupId,
             locationId: locationId,
             location: location,
-            phone:phone
+            phone: phone,
+            status: status
           },
         }
       )
       .then((result) => {
+        // console.log(result.matchedCount)
         res.send(result);
       });
   });
