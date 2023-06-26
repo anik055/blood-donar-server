@@ -14,16 +14,16 @@ app.get("/", (req, res) => {
 const pass = ["3ApXHf3IoUtd5zGI", "eBachelor"];
 
 const uri =
-  "mongodb+srv://eBachelor:3ApXHf3IoUtd5zGI@cluster0.rzm4j.mongodb.net/bachelorCommerce?retryWrites=true&w=majority";
+  "mongodb+srv://eBachelor:HT1srzZ4rnXNkt94@cluster0.rzm4j.mongodb.net/bachelorCommerce?retryWrites=true&w=majority";
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 client.connect((err) => {
   const bloodDetails = client.db("blood-donation").collection("bloodDetails");
   const userDetails = client.db("blood-donation").collection("userDetails");
-
 
   app.get("/AvailableDonars", (req, res) => {
     if (req?.query?.groupId && req?.query?.locationId) {
@@ -31,20 +31,21 @@ client.connect((err) => {
       userDetails
         .find({
           groupId: parseInt(req.query.groupId),
-          locationId: parseInt(req.query.locationId),  status:true
+          locationId: parseInt(req.query.locationId),
+          status: true,
         })
         .toArray((err, documents) => {
           res.send(documents);
         });
     } else if (req?.query?.groupId && !req?.query?.locationId) {
       userDetails
-        .find({ groupId: parseInt(req.query.groupId), status:true })
+        .find({ groupId: parseInt(req.query.groupId), status: true })
         .toArray((err, documents) => {
           res.send(documents);
         });
     } else if (!req?.query?.groupId && req?.query?.locationId) {
       userDetails
-        .find({ locationId: parseInt(req.query.locationId), status:true})
+        .find({ locationId: parseInt(req.query.locationId), status: true })
         .toArray((err, documents) => {
           res.send(documents);
         });
@@ -55,17 +56,18 @@ client.connect((err) => {
     }
   });
 
-app.post("/AddUserDetails", (req, res) => {
-  const order = req.body;
-  userDetails.insertOne(order).then((result) => {
-    console.log(result);
-    res.send(result.insertedCount > 0);
+  app.post("/AddUserDetails", (req, res) => {
+    const order = req.body;
+    userDetails.insertOne(order).then((result) => {
+      console.log(result);
+      res.send(result.insertedCount > 0);
+    });
   });
-});
 
   app.put("/UpdateUserDetails", (req, res) => {
-    const { email, name, group, groupId, location, locationId, phone,status } = req.body;
-    console.log(req.body)
+    const { email, name, group, groupId, location, locationId, phone, status } =
+      req.body;
+    console.log(req.body);
     userDetails
       .updateOne(
         { email: email },
@@ -77,7 +79,7 @@ app.post("/AddUserDetails", (req, res) => {
             locationId: locationId,
             location: location,
             phone: phone,
-            status: status
+            status: status,
           },
         }
       )
@@ -89,14 +91,11 @@ app.post("/AddUserDetails", (req, res) => {
 
   app.post("/GetUserDetails", (req, res) => {
     console.log(req?.body?.email);
-    userDetails
-      .find({email:req.body.email  })
-      .toArray((err, documents) => {
-        // console.log(documents,err)
-        res.send(documents);
-      });
+    userDetails.find({ email: req.body.email }).toArray((err, documents) => {
+      // console.log(documents,err)
+      res.send(documents);
+    });
   });
-
 
   app.post("/AddBloodDetails", (req, res) => {
     const order = req.body;
@@ -126,8 +125,7 @@ app.post("/AddUserDetails", (req, res) => {
         .toArray((err, documents) => {
           res.send(documents);
         });
-    }
-    else if (req?.query?.groupId && !req?.query?.locationId) {
+    } else if (req?.query?.groupId && !req?.query?.locationId) {
       bloodDetails
         .find({ groupId: parseInt(req.query.groupId) })
         .toArray((err, documents) => {
@@ -140,11 +138,14 @@ app.post("/AddUserDetails", (req, res) => {
           res.send(documents);
         });
     } else {
+      console.log("first");
       bloodDetails.find().toArray((err, documents) => {
+        console.log(documents, err);
         res.send(documents);
       });
     }
   });
 });
+
 
 app.listen(process.env.PORT || port);
